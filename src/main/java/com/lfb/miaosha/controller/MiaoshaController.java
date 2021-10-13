@@ -73,34 +73,35 @@ public class MiaoshaController{
 //	private static HashMap<Long, Integer> stockMap =  new HashMap<Long, Integer>();
 //	private HashMap<Long, Boolean> localOverMap =  new HashMap<Long, Boolean>();
 //
-	@RequestMapping("do_miaosha")
-    public String miaosha(Model model, MiaoshaUser user,
+	@RequestMapping(value = "do_miaosha",method = RequestMethod.POST)
+	@ResponseBody
+    public Result<OrderInfo> miaosha(Model model, MiaoshaUser user,
 								   @RequestParam("goodsId")long goodsId) {
     	model.addAttribute("user", user);
     	if(user == null) {
-    		return "login";
+    		return Result.error(CodeMsg.SERVER_ERROR);
     	}
 
 		//判断库存
 		GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);//10个商品
 		int stock = goods.getStockCount();
 		if(stock <= 0) {
-			model.addAttribute("errmsg", CodeMsg.MIAOSHA_FAIL);
-			return "miaosha_fail";
+			return Result.error(CodeMsg.SERVER_ERROR);
+//			model.addAttribute("errmsg", CodeMsg.MIAOSHA_FAIL);
+//			return "miaosha_fail";
 		}
 
 		//判断是否已经秒杀到了
     	MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(user.getId(), goodsId);
     	if(order != null) {
-			model.addAttribute("errmsg", CodeMsg.REPEATE_MIAOSHA.getMsg());
-    		return "miaosha_fail";
+			return Result.error(CodeMsg.REPEATE_MIAOSHA);
+//			model.addAttribute("errmsg", CodeMsg.REPEATE_MIAOSHA.getMsg());
+//    		return "miaosha_fail";
     	}
 
 		//减库存 下订单 写入秒杀订单
 		OrderInfo orderInfo = miaoshaService.miaosha(user, goods);
-		model.addAttribute("orderInfo", orderInfo);
-		model.addAttribute("goods", goods);
-		return "order_detail";
+		return Result.success(orderInfo);
 
 
 //    	if(isGlobalActivityOver()){
