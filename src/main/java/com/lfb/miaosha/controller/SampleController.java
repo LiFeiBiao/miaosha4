@@ -2,6 +2,7 @@ package com.lfb.miaosha.controller;
 
 
 import com.lfb.miaosha.domain.User;
+import com.lfb.miaosha.rabbitmq.MQSender;
 import com.lfb.miaosha.redis.RedisConfig;
 import com.lfb.miaosha.redis.RedisService;
 import com.lfb.miaosha.redis.UserKey;
@@ -22,6 +23,9 @@ public class SampleController {
     @Autowired
     RedisService redisService;
 
+    @Autowired
+    MQSender sender;
+
     @RequestMapping("/")
     @ResponseBody
     String home() {
@@ -30,6 +34,34 @@ public class SampleController {
 
     //rest api json输出；
     //页面
+
+    @RequestMapping("/mq")
+    @ResponseBody
+    public Result<String> mq() {
+        sender.send("direct");
+        return Result.success("Hello，world");
+    }
+
+    @RequestMapping("/mq/topic")
+    @ResponseBody
+    public Result<String> topic() {
+		sender.sendTopic("topic");
+        return Result.success("Hello，world");
+    }
+
+    @RequestMapping("/mq/fanout")
+    @ResponseBody
+    public Result<String> fanout() {
+		sender.sendFanout("fanout");
+        return Result.success("Hello，world");
+    }
+
+    @RequestMapping("/mq/header")
+    @ResponseBody
+    public Result<String> header() {
+		sender.sendHeader("header");
+        return Result.success("Hello，world");
+    }
 
     @RequestMapping("/hello")
     @ResponseBody
@@ -81,6 +113,8 @@ public class SampleController {
         boolean ret = redisService.set(UserKey.getById, ""+1,user);//"UserKey:id1"
         return Result.success(ret);
     }
+
+
 
 }
 
