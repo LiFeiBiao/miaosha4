@@ -7,9 +7,6 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Random;
 
-//import javax.script.ScriptEngine;
-//import javax.script.ScriptEngineManager;
-
 import com.lfb.miaosha.redis.MiaoshaKey;
 import com.lfb.miaosha.utils.MD5Util;
 import com.lfb.miaosha.utils.UUIDUtil;
@@ -21,7 +18,7 @@ import com.lfb.miaosha.controller.MiaoshaController;
 import com.lfb.miaosha.domain.MiaoshaOrder;
 import com.lfb.miaosha.domain.MiaoshaUser;
 import com.lfb.miaosha.domain.OrderInfo;
-//import com.lfb.miaosha.redis.MiaoshaKey;
+import com.lfb.miaosha.redis.MiaoshaKey;
 import com.lfb.miaosha.redis.RedisService;
 import com.lfb.miaosha.utils.MD5Util;
 import com.lfb.miaosha.utils.UUIDUtil;
@@ -45,7 +42,7 @@ public class MiaoshaService {
 	RedisService redisService;
 
 	@Transactional//事务
-	public OrderInfo miaosha(MiaoshaUser user, GoodsVo goods) {
+	public OrderInfo domiaosha(MiaoshaUser user, GoodsVo goods) {
 		//减库存 下订单 写入秒杀订单
 		boolean success = goodsService.reduceStock(goods);
 		if (success){//减库存成功返回订单
@@ -55,51 +52,36 @@ public class MiaoshaService {
 			setGoodsOver(goods.getId());
 			return null;
 		}
-
-
 	}
+
 	//获取秒杀结果
 	public long getMiaoshaResult(Long userId, long goodsId) {
-//		if(MiaoshaController.isGlobalActivityOver()){
-//    		return -1;
-//    	}
+
 		//查询秒杀订单
 		MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
 		if(order != null) {//秒杀成功
 			return order.getOrderId();
 		}else {
 			boolean isOver = getGoodsOver(goodsId);
-			if(!isOver) {//此商品的秒杀还没结束，返回处理中
-				return 0;
-			}else {//此商品的秒杀已经结束，但是可能订单还在生成中
-//				//获取所有的秒杀订单, 判断订单数量和参与秒杀的商品数量
-//				List<MiaoshaOrder> orders = orderService.getAllMiaoshaOrdersByGoodsId(goodsId);
-//				if(orders == null || orders.size() < MiaoshaController.getGoodsStockOriginal(goodsId)){
-//					return 0;//订单还在生成中
-//				}else {//判断是否有此用户的订单
-//					MiaoshaOrder o = get(orders, userId);
-//					if(o != null) {//如果有，则说明秒杀成功
-//						return o.getOrderId();
-//					}else {//秒杀失败
-//						return -1;
-//					}
-//				}
+			if(isOver) {//此商品的秒杀还没结束，返回处理中
 				return -1;
+			}else {//此商品的秒杀已经结束，但是可能订单还在生成中
+				return 0;
 			}
 		}
 	}
 //
-	private MiaoshaOrder get(List<MiaoshaOrder> orders, Long userId) {
-		if(orders == null || orders.size() <= 0) {
-			return null;
-		}
-		for(MiaoshaOrder order : orders) {
-			if(order.getUserId().equals(userId)) {
-				return order;
-			}
-		}
-		return null;
-	}
+//	private MiaoshaOrder get(List<MiaoshaOrder> orders, Long userId) {
+//		if(orders == null || orders.size() <= 0) {
+//			return null;
+//		}
+//		for(MiaoshaOrder order : orders) {
+//			if(order.getUserId().equals(userId)) {
+//				return order;
+//			}
+//		}
+//		return null;
+//	}
 //
 	private void setGoodsOver(Long goodsId) {
 		redisService.set(MiaoshaKey.isGoodsOver, ""+goodsId, true);
@@ -109,10 +91,7 @@ public class MiaoshaService {
 		return redisService.exists(MiaoshaKey.isGoodsOver, ""+goodsId);
 	}
 //
-//	public void reset(List<GoodsVo> goodsList) {
-//		goodsService.resetStock(goodsList);
-//		orderService.deleteOrders();
-//	}
+
 //判断路径是否相等
 	public boolean checkPath(MiaoshaUser user, long goodsId, String path) {
 		if(user == null || path == null) {
@@ -184,7 +163,7 @@ public class MiaoshaService {
 		return true;
 	}
 //
-	private static int calc(String exp) {
+	private int calc(String exp) {
 		try {
 			ScriptEngineManager manager = new ScriptEngineManager();
 			ScriptEngine engine = manager.getEngineByName("JavaScript");
@@ -209,7 +188,4 @@ public class MiaoshaService {
 		return exp;
 	}
 
-//	public static void main(String[] args) {
-//		System.out.println(calc("1+3-8"));
-//	}
 }

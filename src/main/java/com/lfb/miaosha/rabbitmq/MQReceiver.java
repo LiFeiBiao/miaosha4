@@ -32,7 +32,7 @@ public class MQReceiver {
 		@Autowired
 		MiaoshaService miaoshaService;
 		
-		@RabbitListener(queues=MQConfig.QUEUE)
+		@RabbitListener(queues=MQConfig.MIAOSHA_QUEUE)
 		public void receive(String message) {
 			log.info("receive message:"+message);
 			MiaoshaMessage mm  = RedisService.stringToBean(message, MiaoshaMessage.class);
@@ -50,7 +50,7 @@ public class MQReceiver {
 	    		return;
 	    	}
 	    	//减库存 下订单 写入秒杀订单
-	    	miaoshaService.miaosha(user, goods);
+	    	miaoshaService.domiaosha(user, goods);
 		}
 
 //		@RabbitListener(queues=MQConfig.QUEUE)

@@ -41,10 +41,10 @@ public class MQConfig {
 //        return factory;
 //    }
 
-//	@Bean
-//	public Queue miaoshaQueue() {
-//		return new Queue("miaosha.queue", true);
-//	}
+	@Bean
+	public Queue miaoshaQueue() {
+		return new Queue("miaosha.queue", true);
+	}
 //
 	/**
 	 * Direct模式 交换机Exchange

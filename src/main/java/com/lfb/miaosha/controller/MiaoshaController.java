@@ -53,7 +53,7 @@ public class MiaoshaController implements InitializingBean{
 	@Autowired
 	MQSender sender;
 
-	private static HashMap<Long, Integer> stockMap =  new HashMap<Long, Integer>();
+//	private static HashMap<Long, Integer> stockMap =  new HashMap<Long, Integer>();
 	private HashMap<Long, Boolean> localOverMap =  new HashMap<Long, Boolean>();
 //
 
@@ -64,11 +64,11 @@ public class MiaoshaController implements InitializingBean{
 	public void afterPropertiesSet() throws Exception {
 		List<GoodsVo> goodsList = goodsService.listGoodsVo();
 		if(goodsList == null) {
+			System.out.println("goodslist为空");
 			return;
 		}
 		for(GoodsVo goods : goodsList) {
 			redisService.set(GoodsKey.getMiaoshaGoodsStock, ""+goods.getId(), goods.getStockCount());
-			stockMap.put(goods.getId(), goods.getStockCount());
 			localOverMap.put(goods.getId(), false);
 		}
 
@@ -125,10 +125,13 @@ public class MiaoshaController implements InitializingBean{
     	}
 
     	//验证path
+		System.out.println("路径是"+path);
     	boolean check = miaoshaService.checkPath(user, goodsId, path);
     	if(!check){
     		return Result.error(CodeMsg.REQUEST_ILLEGAL);
     	}
+
+
     	//内存标记，减少redis访问
     	boolean over = localOverMap.get(goodsId);
     	if(over) {
