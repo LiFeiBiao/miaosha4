@@ -62,9 +62,9 @@ public class OrderService {
 //		return orderDao.listByGoodsId(goodsId);
 //	}
 //
-//	public void deleteOrders() {
-//		orderDao.deleteOrders();
-//		orderDao.deleteMiaoshaOrders();
-//	}
+	public void deleteOrders() {
+		orderDao.deleteOrders();
+		orderDao.deleteMiaoshaOrders();
+	}
 
 }

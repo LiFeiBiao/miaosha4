@@ -35,33 +35,33 @@ public class SampleController {
     //rest api json输出；
     //页面
 
-    @RequestMapping("/mq")
-    @ResponseBody
-    public Result<String> mq() {
-        sender.send("direct");
-        return Result.success("Hello，world");
-    }
-
-    @RequestMapping("/mq/topic")
-    @ResponseBody
-    public Result<String> topic() {
-		sender.sendTopic("topic");
-        return Result.success("Hello，world");
-    }
-
-    @RequestMapping("/mq/fanout")
-    @ResponseBody
-    public Result<String> fanout() {
-		sender.sendFanout("fanout");
-        return Result.success("Hello，world");
-    }
-
-    @RequestMapping("/mq/header")
-    @ResponseBody
-    public Result<String> header() {
-		sender.sendHeader("header");
-        return Result.success("Hello，world");
-    }
+//    @RequestMapping("/mq")
+//    @ResponseBody
+//    public Result<String> mq() {
+//        sender.send("direct");
+//        return Result.success("Hello，world");
+//    }
+//
+//    @RequestMapping("/mq/topic")
+//    @ResponseBody
+//    public Result<String> topic() {
+//		sender.sendTopic("topic");
+//        return Result.success("Hello，world");
+//    }
+//
+//    @RequestMapping("/mq/fanout")
+//    @ResponseBody
+//    public Result<String> fanout() {
+//		sender.sendFanout("fanout");
+//        return Result.success("Hello，world");
+//    }
+//
+//    @RequestMapping("/mq/header")
+//    @ResponseBody
+//    public Result<String> header() {
+//		sender.sendHeader("header");
+//        return Result.success("Hello，world");
+//    }
 
     @RequestMapping("/hello")
     @ResponseBody

@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.lfb.miaosha.domain.MiaoshaUser;
 import com.lfb.miaosha.exception.GlobalException;
+import com.lfb.miaosha.redis.MiaoshaKey;
 import com.lfb.miaosha.redis.MiaoshaUserKey;
 import com.lfb.miaosha.redis.RedisService;
 import com.lfb.miaosha.utils.UUIDUtil;
@@ -119,6 +120,8 @@ public class MiaoshaUserService {
 	}
 
 
+
+
 //	public MiaoshaUser getByToken(HttpServletResponse response, String token) {
 //		if(StringUtils.isEmpty(token)) {
 //			return null;
@@ -156,12 +159,6 @@ public class MiaoshaUserService {
 //		return token;
 //	}
 //
-//	private void addCookie(HttpServletResponse response, String token, MiaoshaUser user) {
-//		redisService.set(MiaoshaUserKey.token, token, user);
-//		Cookie cookie = new Cookie(COOKI_NAME_TOKEN, token);
-//		cookie.setMaxAge(MiaoshaUserKey.token.expireSeconds());
-//		cookie.setPath("/");
-//		response.addCookie(cookie);
-//	}
+
 
 }
